@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/SaltLakeCountyboundary_1.js"></script>
+        <script src="data/Censustracts_2.js"></script>
+        <script src="data/Year2015pedestriancrashes_3.js"></script>
+        <script src="data/Year2016pedestriancrashes_4.js"></script>
+        <script src="data/Year2017pedestriancrashes_5.js"></script>
+        <script src="data/Year2018pedestriancrashes_6.js"></script>
+        <script src="data/Year2019pedestriancrashes_7.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[40.43273809360631,-112.29041756295479],[40.862884109168576,-111.52276197121026]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Basemap_0');
+        map.getPane('pane_Basemap_0').style.zIndex = 400;
+        var layer_Basemap_0 = L.tileLayer('https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.pn', {
+            pane: 'pane_Basemap_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+        });
+        layer_Basemap_0;
+        map.addLayer(layer_Basemap_0);
+        function pop_SaltLakeCountyboundary_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COUNTYNBR'] !== null ? autolinker.link(feature.properties['COUNTYNBR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ENTITYNBR'] !== null ? autolinker.link(feature.properties['ENTITYNBR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ENTITYYR'] !== null ? autolinker.link(feature.properties['ENTITYYR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? autolinker.link(feature.properties['NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FIPS'] !== null ? autolinker.link(feature.properties['FIPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['STATEPLANE'] !== null ? autolinker.link(feature.properties['STATEPLANE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POP_LASTCE'] !== null ? autolinker.link(feature.properties['POP_LASTCE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POP_CURRES'] !== null ? autolinker.link(feature.properties['POP_CURRES'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GlobalID'] !== null ? autolinker.link(feature.properties['GlobalID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FIPS_STR'] !== null ? autolinker.link(feature.properties['FIPS_STR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COLOR4'] !== null ? autolinker.link(feature.properties['COLOR4'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Leng'] !== null ? autolinker.link(feature.properties['SHAPE_Leng'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Area'] !== null ? autolinker.link(feature.properties['SHAPE_Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_SaltLakeCountyboundary_1_0() {
+            return {
+                pane: 'pane_SaltLakeCountyboundary_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '10,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(133,182,111,0.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_SaltLakeCountyboundary_1');
+        map.getPane('pane_SaltLakeCountyboundary_1').style.zIndex = 401;
+        map.getPane('pane_SaltLakeCountyboundary_1').style['mix-blend-mode'] = 'normal';
+        var layer_SaltLakeCountyboundary_1 = new L.geoJson(json_SaltLakeCountyboundary_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_SaltLakeCountyboundary_1',
+            layerName: 'layer_SaltLakeCountyboundary_1',
+            pane: 'pane_SaltLakeCountyboundary_1',
+            onEachFeature: pop_SaltLakeCountyboundary_1,
+            style: style_SaltLakeCountyboundary_1_0,
+        });
+        bounds_group.addLayer(layer_SaltLakeCountyboundary_1);
+        map.addLayer(layer_SaltLakeCountyboundary_1);
+        function pop_Censustracts_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">OBJECTID</th>\
+                        <td>' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>STATEFP10</strong><br />' + (feature.properties['STATEFP10'] !== null ? autolinker.link(feature.properties['STATEFP10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COUNTYFP10'] !== null ? autolinker.link(feature.properties['COUNTYFP10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TRACTCE10'] !== null ? autolinker.link(feature.properties['TRACTCE10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOID10'] !== null ? autolinker.link(feature.properties['GEOID10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NAME10</th>\
+                        <td>' + (feature.properties['NAME10'] !== null ? autolinker.link(feature.properties['NAME10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FUNCSTAT10'] !== null ? autolinker.link(feature.properties['FUNCSTAT10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['INTPTLAT10'] !== null ? autolinker.link(feature.properties['INTPTLAT10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['INTPTLON10'] !== null ? autolinker.link(feature.properties['INTPTLON10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LOGRECNO'] !== null ? autolinker.link(feature.properties['LOGRECNO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREALAND'] !== null ? autolinker.link(feature.properties['AREALAND'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREAWATR'] !== null ? autolinker.link(feature.properties['AREAWATR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POP100'] !== null ? autolinker.link(feature.properties['POP100'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['HU100'] !== null ? autolinker.link(feature.properties['HU100'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020001'] !== null ? autolinker.link(feature.properties['P0020001'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020002'] !== null ? autolinker.link(feature.properties['P0020002'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020003'] !== null ? autolinker.link(feature.properties['P0020003'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020004'] !== null ? autolinker.link(feature.properties['P0020004'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020005'] !== null ? autolinker.link(feature.properties['P0020005'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020006'] !== null ? autolinker.link(feature.properties['P0020006'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020007'] !== null ? autolinker.link(feature.properties['P0020007'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020008'] !== null ? autolinker.link(feature.properties['P0020008'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020009'] !== null ? autolinker.link(feature.properties['P0020009'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0020010'] !== null ? autolinker.link(feature.properties['P0020010'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['MTFCC'] !== null ? autolinker.link(feature.properties['MTFCC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0010011'] !== null ? autolinker.link(feature.properties['P0010011'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0010012'] !== null ? autolinker.link(feature.properties['P0010012'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0010013'] !== null ? autolinker.link(feature.properties['P0010013'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P0010014'] !== null ? autolinker.link(feature.properties['P0010014'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SqMiles'] !== null ? autolinker.link(feature.properties['SqMiles'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Leng'] !== null ? autolinker.link(feature.properties['SHAPE_Leng'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SHAPE_Area'] !== null ? autolinker.link(feature.properties['SHAPE_Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Censustracts_2_0() {
+            return {
+                pane: 'pane_Censustracts_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,232,224,0.8705882352941177)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_Censustracts_2');
+        map.getPane('pane_Censustracts_2').style.zIndex = 402;
+        map.getPane('pane_Censustracts_2').style['mix-blend-mode'] = 'normal';
+        var layer_Censustracts_2 = new L.geoJson(json_Censustracts_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Censustracts_2',
+            layerName: 'layer_Censustracts_2',
+            pane: 'pane_Censustracts_2',
+            onEachFeature: pop_Censustracts_2,
+            style: style_Censustracts_2_0,
+        });
+        bounds_group.addLayer(layer_Censustracts_2);
+        map.addLayer(layer_Censustracts_2);
+        function pop_Year2015pedestriancrashes_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">objectid</th>\
+                        <td>' + (feature.properties['objectid'] !== null ? autolinker.link(feature.properties['objectid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">YEAR</th>\
+                        <td>' + (feature.properties['YEAR'] !== null ? autolinker.link(feature.properties['YEAR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Year2015pedestriancrashes_3_0() {
+            return {
+                pane: 'pane_Year2015pedestriancrashes_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(97,201,168,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Year2015pedestriancrashes_3');
+        map.getPane('pane_Year2015pedestriancrashes_3').style.zIndex = 403;
+        map.getPane('pane_Year2015pedestriancrashes_3').style['mix-blend-mode'] = 'normal';
+        var layer_Year2015pedestriancrashes_3 = new L.geoJson(json_Year2015pedestriancrashes_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Year2015pedestriancrashes_3',
+            layerName: 'layer_Year2015pedestriancrashes_3',
+            pane: 'pane_Year2015pedestriancrashes_3',
+            onEachFeature: pop_Year2015pedestriancrashes_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Year2015pedestriancrashes_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Year2015pedestriancrashes_3);
+        map.addLayer(layer_Year2015pedestriancrashes_3);
+        function pop_Year2016pedestriancrashes_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">objectid</th>\
+                        <td>' + (feature.properties['objectid'] !== null ? autolinker.link(feature.properties['objectid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">YEAR</th>\
+                        <td>' + (feature.properties['YEAR'] !== null ? autolinker.link(feature.properties['YEAR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Year2016pedestriancrashes_4_0() {
+            return {
+                pane: 'pane_Year2016pedestriancrashes_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(165,56,96,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Year2016pedestriancrashes_4');
+        map.getPane('pane_Year2016pedestriancrashes_4').style.zIndex = 404;
+        map.getPane('pane_Year2016pedestriancrashes_4').style['mix-blend-mode'] = 'normal';
+        var layer_Year2016pedestriancrashes_4 = new L.geoJson(json_Year2016pedestriancrashes_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Year2016pedestriancrashes_4',
+            layerName: 'layer_Year2016pedestriancrashes_4',
+            pane: 'pane_Year2016pedestriancrashes_4',
+            onEachFeature: pop_Year2016pedestriancrashes_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Year2016pedestriancrashes_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Year2016pedestriancrashes_4);
+        map.addLayer(layer_Year2016pedestriancrashes_4);
+        function pop_Year2017pedestriancrashes_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>objectid</strong><br />' + (feature.properties['objectid'] !== null ? autolinker.link(feature.properties['objectid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>YEAR</strong><br />' + (feature.properties['YEAR'] !== null ? autolinker.link(feature.properties['YEAR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Year2017pedestriancrashes_5_0() {
+            return {
+                pane: 'pane_Year2017pedestriancrashes_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(76,59,77,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Year2017pedestriancrashes_5');
+        map.getPane('pane_Year2017pedestriancrashes_5').style.zIndex = 405;
+        map.getPane('pane_Year2017pedestriancrashes_5').style['mix-blend-mode'] = 'normal';
+        var layer_Year2017pedestriancrashes_5 = new L.geoJson(json_Year2017pedestriancrashes_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Year2017pedestriancrashes_5',
+            layerName: 'layer_Year2017pedestriancrashes_5',
+            pane: 'pane_Year2017pedestriancrashes_5',
+            onEachFeature: pop_Year2017pedestriancrashes_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Year2017pedestriancrashes_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Year2017pedestriancrashes_5);
+        map.addLayer(layer_Year2017pedestriancrashes_5);
+        function pop_Year2018pedestriancrashes_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">objectid</th>\
+                        <td>' + (feature.properties['objectid'] !== null ? autolinker.link(feature.properties['objectid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">YEAR</th>\
+                        <td>' + (feature.properties['YEAR'] !== null ? autolinker.link(feature.properties['YEAR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Year2018pedestriancrashes_6_0() {
+            return {
+                pane: 'pane_Year2018pedestriancrashes_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,238,219,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Year2018pedestriancrashes_6');
+        map.getPane('pane_Year2018pedestriancrashes_6').style.zIndex = 406;
+        map.getPane('pane_Year2018pedestriancrashes_6').style['mix-blend-mode'] = 'normal';
+        var layer_Year2018pedestriancrashes_6 = new L.geoJson(json_Year2018pedestriancrashes_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Year2018pedestriancrashes_6',
+            layerName: 'layer_Year2018pedestriancrashes_6',
+            pane: 'pane_Year2018pedestriancrashes_6',
+            onEachFeature: pop_Year2018pedestriancrashes_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Year2018pedestriancrashes_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Year2018pedestriancrashes_6);
+        map.addLayer(layer_Year2018pedestriancrashes_6);
+        function pop_Year2019pedestriancrashes_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">objectid</th>\
+                        <td>' + (feature.properties['objectid'] !== null ? autolinker.link(feature.properties['objectid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">YEAR</th>\
+                        <td>' + (feature.properties['YEAR'] !== null ? autolinker.link(feature.properties['YEAR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Year2019pedestriancrashes_7_0() {
+            return {
+                pane: 'pane_Year2019pedestriancrashes_7',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(173,168,182,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Year2019pedestriancrashes_7');
+        map.getPane('pane_Year2019pedestriancrashes_7').style.zIndex = 407;
+        map.getPane('pane_Year2019pedestriancrashes_7').style['mix-blend-mode'] = 'normal';
+        var layer_Year2019pedestriancrashes_7 = new L.geoJson(json_Year2019pedestriancrashes_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Year2019pedestriancrashes_7',
+            layerName: 'layer_Year2019pedestriancrashes_7',
+            pane: 'pane_Year2019pedestriancrashes_7',
+            onEachFeature: pop_Year2019pedestriancrashes_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Year2019pedestriancrashes_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Year2019pedestriancrashes_7);
+        map.addLayer(layer_Year2019pedestriancrashes_7);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Year2019pedestriancrashes_7.png" /> Year 2019 pedestrian crashes': layer_Year2019pedestriancrashes_7,'<img src="legend/Year2018pedestriancrashes_6.png" /> Year 2018 pedestrian crashes': layer_Year2018pedestriancrashes_6,'<img src="legend/Year2017pedestriancrashes_5.png" />  Year 2017 pedestrian crashes': layer_Year2017pedestriancrashes_5,'<img src="legend/Year2016pedestriancrashes_4.png" /> Year 2016 pedestrian crashes': layer_Year2016pedestriancrashes_4,'<img src="legend/Year2015pedestriancrashes_3.png" /> Year 2015 pedestrian crashes': layer_Year2015pedestriancrashes_3,'<img src="legend/Censustracts_2.png" /> Census tracts': layer_Censustracts_2,'<img src="legend/SaltLakeCountyboundary_1.png" /> Salt Lake County boundary': layer_SaltLakeCountyboundary_1,"Base map": layer_Basemap_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
